@@ -16,13 +16,20 @@
   function start () {
     
     function run() {
-      switch(getManifestType()) {
-        case 'js':
-          enhanceJSModules();
-          return;
-        default:
-          /* do nothing */
-          return;
+      if (!$(document.body).hasClass('boxcutter-processed')) {
+        switch(getManifestType()) {
+          case 'js':
+            enhanceJSModules();
+            $(document.body).addClass('boxcutter-processed');
+            return;
+          case 'rb':
+            enhanceRBModules();
+            $(document.body).addClass('boxcutter-processed');
+            return;
+          default:
+            /* do nothing */
+            return;
+        }
       }
     }
     
@@ -52,8 +59,43 @@
       case 'package.json':
       case 'bower.json':
         return 'js';
+      case 'Gemfile':
+        return 'rb';
       default:
         return null;
+    }
+  }
+
+  function handleRBClick(jqevt) {
+    var $target = $(jqevt.target);
+    $.ajax("https://rubygems.org/api/v1/gems/" + $target.data('pkg-name') + ".json").then(function(data) {
+      window.open(data.homepage_uri);
+    });
+  }
+
+  function enhanceRBModules() {
+    var $gemRows = $('.type-ruby tbody tr:contains("gem \'"), .type-ruby tbody tr:contains("gem ")');
+    for (var i = 0; i < $gemRows.length; i += 1) {
+      var $row = $($gemRows[i]);
+
+      var rowText = $row.text().trim();
+      var regexResult = /^gem\s+([\'\"]{1})([\w\-\_]+)\1/.exec(rowText);
+      if (regexResult) {
+        var gemName = regexResult[2];
+      
+        var $pkgName = $row.find('.pl-s:contains("' + gemName + '"), .pl-s:contains(\'' + gemName + '\')');
+        var $quot = $pkgName.children()[0];
+        var quot = $quot.innerText;
+
+        var $lnk = $('<a data-pkg-name="' + gemName + '"></a>');
+        $lnk.click(handleRBClick);
+        $lnk[0].innerHTML = '<span class="pl-pds">' + quot + '</span>' + gemName + '<span class="pl-pds">' + quot + '</span>';
+
+        $pkgName[0].innerHTML = '';
+        $pkgName.append($lnk);
+
+        
+      }
     }
   }
 
@@ -61,10 +103,9 @@
     var $target = $(jqevt.target);
     var npmUrl = serviceUrls.npm + $target.data('pkg-name');
     $.ajax("https://registry.npmjs.org/" + $target.data('pkg-name')).then(function(data) {
-      window.open(data.homepage || npmUrl);
+      window.open(data.homepage);
     });
   }
-
 
   function enhanceJSModules() {
     var json = JSON.parse($('.js-file-line-container tbody').text());
@@ -75,11 +116,14 @@
         var pkgVersion = section[k];
         if (/^[0-9\.\~\^\-A-Za-z\*]+$/.test(pkgVersion)) {
           var $line = $('.js-file-line:contains(' + pkgName + '):contains(' + pkgVersion + ')').first();
-          var $pkg = $line.find(".pl-s:contains('" + pkgName + "')");
-          var $ver = $line.find(".pl-s:contains('" + pkgVersion + "')");
+          var $pkg = $line.find(".pl-s:contains('" + pkgName + "'), .pl-s:contains(\"" + pkgName + "\")");
+           var $quot = $pkg.children()[0];
+          var quot = $quot.innerText;
+          
+          var $ver = $line.find(".pl-s:contains('" + pkgVersion + "'), .pl-s:contains(\"" + pkgVersion + "\")");
           var $lnk = $('<a data-pkg-name="' + pkgName + '" data-pkg-ver="' + pkgVersion + '"></a>');
           $lnk.click(handleJSClick);
-          $lnk[0].innerHTML = '<span class="pl-pds">"</span>' + pkgName + '<span class="pl-pds">"</span>';
+          $lnk[0].innerHTML = '<span class="pl-pds">' + quot + '</span>' + pkgName + '<span class="pl-pds">' + quot + '</span>';
           $pkg[0].innerHTML = '';
           $pkg.append($lnk);
         }
