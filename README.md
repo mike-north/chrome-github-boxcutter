@@ -6,4 +6,8 @@ A Chrome Extension to enhance package manifests in github
 
 ## License
 
-[MIT License](http://en.wikipedia.org/wiki/MIT_License)
+Please don't copy this for now. I may license it in the future
+
+## Copyright
+
+(c) 2015 Mike North
