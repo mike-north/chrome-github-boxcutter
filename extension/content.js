@@ -14,14 +14,36 @@
   start ();
 
   function start () {
-    switch(getManifestType()) {
-      case 'js':
-        enhanceJSModules();
-        return;
-      default:
-        /* do nothing */
-        return;
+    
+    function run() {
+      switch(getManifestType()) {
+        case 'js':
+          enhanceJSModules();
+          return;
+        default:
+          /* do nothing */
+          return;
+      }
     }
+    
+    $(document.body).click(function (evt) {
+      var tries = 0;
+
+      var task = setInterval(function() {
+        if (getManifestType()) {
+          run();
+          clearInterval(task);
+        }
+        else {
+          if (tries >= 20) {
+            clearInterval(task);
+          }
+          tries++;
+        }
+      }, 100);
+    });
+
+    run();
   }
 
   function getManifestType() {

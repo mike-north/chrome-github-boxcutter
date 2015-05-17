@@ -1,7 +1,7 @@
 {
   "name": "Github Boxcutter",
   "description": "Better package manifests on Github",
-  "version": "1",
+  "version": "2",
   "manifest_version": 2,
   "permissions": [
     "https://registry.npmjs.org/*"
@@ -19,8 +19,6 @@
     }
   ],
   "icons": {
-    "16": "icon128.png",
-    "48": "icon128.png",
     "128": "icon128.png"
   }
 }
