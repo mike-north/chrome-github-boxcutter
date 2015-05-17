@@ -117,12 +117,12 @@
         if (/^[0-9\.\~\^\-A-Za-z\*\>\<\=\s]+$/.test(pkgVersion)) {
           var lineSelector = '.js-file-line:contains(\'\'' + pkgName + '\'\'):contains(' + pkgVersion + '), .js-file-line:contains(\'\"' + pkgName + '\"\'):contains(' + pkgVersion + ')';
           var $line = $(lineSelector).first();
-          var $pkg = $line.find(".pl-s:contains('" + pkgName + "'), .pl-s:contains(\"" + pkgName + "\")");
+          var $pkg = $line.find(".pl-s:contains(''" + pkgName + "''), .pl-s:contains('\"" + pkgName + "\"')");
         
            var $quot = $pkg.children()[0];
           var quot = $quot.innerText;
           
-          var $ver = $line.find(".pl-s:contains('" + pkgVersion + "'), .pl-s:contains(\"" + pkgVersion + "\")");
+          var $ver = $line.find(".pl-s:contains(''" + pkgVersion + "''), .pl-s:contains('\"" + pkgVersion + "\"')");
           var $lnk = $('<a data-pkg-name="' + pkgName + '" data-pkg-ver="' + pkgVersion + '"></a>');
           $lnk.click(handleJSClick);
           $lnk[0].innerHTML = '<span class="pl-pds">' + quot + '</span>' + pkgName + '<span class="pl-pds">' + quot + '</span>';
