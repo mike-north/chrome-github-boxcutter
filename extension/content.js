@@ -8,7 +8,8 @@
   'use strict';
 
   var serviceUrls = {
-    npm: 'https://www.npmjs.org/package/'
+    npm: 'https://www.npmjs.org/package/',
+    bower: 'https://bower.herokuapp.com/packages/search/'
   };
 
   start ();
@@ -18,8 +19,12 @@
     function run() {
       if (!$(document.body).hasClass('boxcutter-processed')) {
         switch(getManifestType()) {
-          case 'js':
-            enhanceJSModules();
+          case 'npm':
+            enhanceJSModules('npm');
+            $(document.body).addClass('boxcutter-processed');
+            return;
+          case 'bower':
+            enhanceJSModules('bower');
             $(document.body).addClass('boxcutter-processed');
             return;
           case 'rb':
@@ -57,8 +62,9 @@
     var fileName = $('.final-path').text();
     switch(fileName) {
       case 'package.json':
+        return 'npm';
       case 'bower.json':
-        return 'js';
+        return 'bower';
       case 'Gemfile':
         return 'rb';
       default:
@@ -101,13 +107,23 @@
 
   function handleJSClick(jqevt) {
     var $target = $(jqevt.target);
-    var npmUrl = serviceUrls.npm + $target.data('pkg-name');
-    $.ajax("https://registry.npmjs.org/" + $target.data('pkg-name')).then(function(data) {
-      window.open(data.homepage);
-    });
+    switch($target.data('pkg-type')) {
+      case 'npm':
+        var npmUrl = serviceUrls.npm + $target.data('pkg-name');
+        $.ajax(npmUrl).then(function(data) {
+          window.open(data.homepage);
+        });
+        break;
+      case 'bower':
+        var bowerUrl = serviceUrls.bower + $target.data('pkg-name');
+        $.ajax(bowerUrl).then(function(data) {
+          window.open(data[0].url.replace("git://", "https://"));
+        });
+        break;
+    }
   }
 
-  function enhanceJSModules() {
+  function enhanceJSModules(moduleType) {
     var json = JSON.parse($('.js-file-line-container tbody').text());
 
     function enhanceLinkSection (section) {
@@ -123,7 +139,7 @@
           var quot = $quot.innerText;
           
           var $ver = $line.find(".pl-s:contains(''" + pkgVersion + "''), .pl-s:contains('\"" + pkgVersion + "\"')");
-          var $lnk = $('<a data-pkg-name="' + pkgName + '" data-pkg-ver="' + pkgVersion + '"></a>');
+          var $lnk = $('<a data-pkg-type="' + moduleType + '" data-pkg-name="' + pkgName + '" data-pkg-ver="' + pkgVersion + '"></a>');
           $lnk.click(handleJSClick);
           $lnk[0].innerHTML = '<span class="pl-pds">' + quot + '</span>' + pkgName + '<span class="pl-pds">' + quot + '</span>';
           $pkg[0].innerHTML = '';

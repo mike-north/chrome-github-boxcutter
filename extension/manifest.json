@@ -5,7 +5,8 @@
   "manifest_version": 2,
   "permissions": [
     "https://registry.npmjs.org/*",
-    "https://rubygems.org/*"
+    "https://rubygems.org/*",
+    "https://bower.herokuapp.com/*"
   ],
   "content_scripts": [
     {
