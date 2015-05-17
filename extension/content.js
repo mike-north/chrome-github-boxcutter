@@ -114,9 +114,11 @@
       for(var k in section) {
         var pkgName = k;
         var pkgVersion = section[k];
-        if (/^[0-9\.\~\^\-A-Za-z\*]+$/.test(pkgVersion)) {
-          var $line = $('.js-file-line:contains(' + pkgName + '):contains(' + pkgVersion + ')').first();
+        if (/^[0-9\.\~\^\-A-Za-z\*\>\<\=\s]+$/.test(pkgVersion)) {
+          var lineSelector = '.js-file-line:contains(\'\'' + pkgName + '\'\'):contains(' + pkgVersion + '), .js-file-line:contains(\'\"' + pkgName + '\"\'):contains(' + pkgVersion + ')';
+          var $line = $(lineSelector).first();
           var $pkg = $line.find(".pl-s:contains('" + pkgName + "'), .pl-s:contains(\"" + pkgName + "\")");
+        
            var $quot = $pkg.children()[0];
           var quot = $quot.innerText;
           
