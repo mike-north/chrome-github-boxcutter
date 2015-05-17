@@ -9,8 +9,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://github.com/*",
-        "https://git.corp.yahoo.com/*"
+        "https://github.com/*"
       ],
       "js": [
         "jquery.js",
