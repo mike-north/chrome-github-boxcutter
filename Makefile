@@ -8,10 +8,13 @@ zip: extension/*
 	@-rm -rf github-boxcutter.zip $(EXTNAME) || true
 	@mkdir $(EXTNAME)
 	@cp extension/* $(EXTNAME)
-	zip -r github-boxcutter.zip $(EXTNAME)
+	@mkdir dist 2> /dev/null || true
+	zip -r dist/github-boxcutter.zip $(EXTNAME)
+	@-rm -rf $(EXTNAME)
 
 crx: extension/*
-	@-rm -rf github-boxcutter.crx $(EXTNAME) || true
+	@mkdir dist 2> /dev/null || true
+	@-rm -rf dist/github-boxcutter.crx $(EXTNAME) || true
 	@mkdir $(EXTNAME)
 	@cp extension/* $(EXTNAME)
 ifeq ($(wildcard github-boxcutter.pem),)
@@ -19,8 +22,8 @@ ifeq ($(wildcard github-boxcutter.pem),)
 else
 	$(CHROME) --pack-extension=$(EXTNAME) --pack-extension-key=github-boxcutter.pem
 endif
+	@-mv $(EXTNAME).crx dist/
+	@-rm -rf $(EXTNAME)
 
 clean:
-	@-rm *.zip || true
-	@-rm *.crx || true
-	@-rm -rf $(D) || true
+	@-rm -rf *.zip *.crx $(EXTNAME) dist || true
