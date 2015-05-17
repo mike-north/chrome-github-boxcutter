@@ -1,0 +1,24 @@
+{
+  "name": "github-boxcutter",
+  "version": "0.0.1",
+  "description": "Github.com package manifest enhancements",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/truenorth/github-boxcutter.git"
+  },
+  "keywords": [
+    "github",
+    "chrome-extension",
+    "developer-tools"
+  ],
+  "author": "Mike North <michael.l.north@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/truenorth/github-boxcutter/issues"
+  },
+  "homepage": "https://github.com/truenorth/github-boxcutter",
+  "dependencies": {
+    "jquery": "^2.1.4"
+  }
+}
