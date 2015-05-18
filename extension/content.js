@@ -47,12 +47,12 @@
           clearInterval(task);
         }
         else {
-          if (tries >= 20) {
+          if (tries >= 100) {
             clearInterval(task);
           }
           tries++;
         }
-      }, 100);
+      }, 200);
     });
 
     run();
@@ -107,17 +107,19 @@
 
   function handleJSClick(jqevt) {
     var $target = $(jqevt.target);
+    var packageName = $target.data('pkg-name');
     switch($target.data('pkg-type')) {
       case 'npm':
-        var npmUrl = serviceUrls.npm + $target.data('pkg-name');
-        $.ajax(npmUrl).then(function(data) {
-          window.open(data.homepage);
+        var npmUrl = serviceUrls.npm + packageName;
+        $.ajax("https://registry.npmjs.org/" + packageName).then(function(data) {
+          window.open(data.homepage || npmUrl);
         });
         break;
       case 'bower':
-        var bowerUrl = serviceUrls.bower + $target.data('pkg-name');
+        var bowerUrl = serviceUrls.bower + packageName;
         $.ajax(bowerUrl).then(function(data) {
-          window.open(data[0].url.replace("git://", "https://"));
+          var pageUrl = (data[0] && data[0].url) ? data[0].url.replace("git://", "https://") : ("http://bower.io/search/?q=" + packageName);
+          window.open(pageUrl);
         });
         break;
     }

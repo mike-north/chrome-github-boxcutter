@@ -1,7 +1,7 @@
 {
   "name": "Github Boxcutter",
   "description": "Better package manifests on Github",
-  "version": "5",
+  "version": "6",
   "manifest_version": 2,
   "permissions": [
     "https://registry.npmjs.org/*",
