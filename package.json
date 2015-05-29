@@ -1,6 +1,6 @@
 {
   "name": "github-boxcutter",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Github.com package manifest enhancements",
   "main": "index.js",
   "repository": {
@@ -13,7 +13,7 @@
     "developer-tools"
   ],
   "author": "Mike North <michael.l.north@gmail.com>",
-  "license": "Proprietary",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/truenorth/github-boxcutter/issues"
   },

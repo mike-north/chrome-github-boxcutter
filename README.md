@@ -8,7 +8,7 @@ A Chrome Extension to enhance package manifests in github
 
 ## License
 
-Please don't copy this for now. I may license it in the future
+MIT License
 
 ## Copyright
 
