@@ -1,11 +1,12 @@
 {
   "name": "Boxcutter",
   "description": "Better package manifests on Github",
-  "version": "7",
+  "version": "8",
   "manifest_version": 2,
   "permissions": [
     "https://registry.npmjs.org/*",
     "https://rubygems.org/*",
+    "https://hex.pm/*",
     "https://bower.herokuapp.com/*"
   ],
   "content_scripts": [

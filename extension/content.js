@@ -31,6 +31,9 @@
             enhanceRBModules();
             $(document.body).addClass('boxcutter-processed');
             return;
+          case 'elixir':
+            enhanceElixirModules();
+            $(document.body).addClass('boxcutter-processed');
           default:
             /* do nothing */
             return;
@@ -67,6 +70,8 @@
         return 'bower';
       case 'Gemfile':
         return 'rb';
+      case 'mix.exs':
+        return 'elixir';
       default:
         return null;
     }
@@ -101,6 +106,42 @@
         $pkgName.append($lnk);
 
         
+      }
+    }
+  }
+  
+  function handleElixirClick(elem) {
+    var pkgName = elem.target.attributes['data-pkg-name'].value;
+    var hexUrl = 'https://hex.pm/packages/' + pkgName;
+    $.get(hexUrl).then(function(data) {
+      var ghurl = $(data).find('ul.links li a[href*="github"]').attr('href');
+      window.open(ghurl || hexUrl);
+    });
+  }
+  
+  function enhanceElixirModules() {
+    var codeRows = $('.type-elixir tbody tr td.blob-code-inner');
+    var inDeps = false;
+    for (var i = 0; i < codeRows.length; i+= 1) {
+      var rowElem = codeRows[i];
+      if (rowElem.innerText.trim() === 'defp deps do') {
+        inDeps = true;
+      } else {
+        if (inDeps) {
+          if (rowElem.innerText.trim() === 'end') {
+            inDeps = false;
+          } else {
+            var r = /[\[]*\{\:([\w]+)[\,\s]*\"[\~\>\=]+[\s]*([0-9\.\w\-]+)/g;
+            var parts = r.exec(rowElem.innerText.trim());
+            var lib = parts[1];
+            var vers = parts[2];
+            var $pkgSymbol = $(rowElem).find('.pl-c1')[0]; 
+            var existingText = $pkgSymbol.innerText;
+            var newText = ":<a data-pkg-name=\"" + existingText.substring(1) + "\">" + existingText.substring(1) + "</a>"
+            $($pkgSymbol).click(handleElixirClick);
+            $pkgSymbol.innerHTML = newText;
+          }
+        }
       }
     }
   }
