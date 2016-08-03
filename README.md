@@ -1,6 +1,16 @@
 # GitHub Boxcutter
 
-A Chrome Extension to enhance package manifests in github
+Better package manifests on Github
+Boxcutter enhances package manifests on github. 
+
+* Click on package names to jump to their repositories
+
+Support for the following package managers (more coming soon):
+
+* NPM (JavaScript)
+* Bower (JavaScript)
+* Gem (Ruby)
+* Hex (Elixir)
 
 ![Screenshot](https://raw.githubusercontent.com/truenorth/chrome-github-boxcutter/master/screenshot_small.png)
 
