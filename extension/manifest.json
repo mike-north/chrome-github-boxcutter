@@ -7,7 +7,8 @@
     "https://registry.npmjs.org/*",
     "https://rubygems.org/*",
     "https://hex.pm/*",
-    "https://bower.herokuapp.com/*"
+    "https://bower.herokuapp.com/*",
+    "https://packagist.org/*"
   ],
   "content_scripts": [
     {

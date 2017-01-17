@@ -9,9 +9,11 @@
 
   var serviceUrls = {
     npm: 'https://www.npmjs.org/package/',
-    bower: 'https://bower.herokuapp.com/packages/search/'
+    bower: 'https://bower.herokuapp.com/packages/search/',
+    composer: 'https://packagist.org/packages/'
   };
 
+  $('head').append('<style type="text/css">a[data-pkg-name]{cursor:pointer}</style>');
   start ();
 
   function start () {
@@ -34,6 +36,9 @@
           case 'elixir':
             enhanceElixirModules();
             $(document.body).addClass('boxcutter-processed');
+          case 'composer':
+            enhanceComposerModules();
+            $('body').addClass('boxcutter-processed');
           default:
             /* do nothing */
             return;
@@ -72,6 +77,8 @@
         return 'rb';
       case 'mix.exs':
         return 'elixir';
+      case 'composer.json':
+        return 'composer';
       default:
         return null;
     }
@@ -192,6 +199,48 @@
     }
     enhanceLinkSection(json.devDependencies);
     enhanceLinkSection(json.dependencies);
+  }
+
+  function handleComposerClick(jqevt) {
+    var $target = $(jqevt.target);
+    var packageName = $target.data('pkg-name');
+    var packagistUrl = serviceUrls.composer + packageName;
+    $.ajax("https://packagist.org/p/" + packageName + '.json').then(function(data) {
+      window.open(data['packages'][$target.data('pkg-name')]['dev-master']['homepage'] || packagistUrl);
+    });
+  }
+
+  function enhanceComposerModules() {
+    var json = JSON.parse($('.js-file-line-container tbody').text());
+
+    function enhanceLinkSection (section) {
+      for(var k in section) {
+        var pkgName = k;
+        var pkgVersion = section[k];
+        if (/^[0-9\.\~\@\^\-a-z\*\>\<\=\/\s]+$/i.test(pkgVersion)) {
+          var lineSelector = '.js-file-line:contains(\'\'' + pkgName + '\'\'):contains(' + pkgVersion + '), .js-file-line:contains(\'\"' + pkgName + '\"\'):contains(' + pkgVersion + ')';
+          var $line = $(lineSelector).first();
+          var $pkg = $line.find(".pl-s:contains(''" + pkgName + "''), .pl-s:contains('\"" + pkgName + "\"')");
+
+          var $quot = $pkg.children()[0];
+          var quot = $quot.innerText;
+
+          var $ver = $line.find(".pl-s:contains(''" + pkgVersion + "''), .pl-s:contains('\"" + pkgVersion + "\"')");
+          var $lnk = $('<a data-pkg-type="composer" data-pkg-name="' + pkgName + '" data-pkg-ver="' + pkgVersion + '"></a>');
+          $lnk.click(handleComposerClick);
+          $lnk[0].innerHTML = '<span class="pl-pds">' + quot + '</span>' + pkgName + '<span class="pl-pds">' + quot + '</span>';
+          $pkg[0].innerHTML = '';
+          $pkg.append($lnk);
+        }
+      }
+    }
+
+	if (typeof json['require'] != undefined) {
+      enhanceLinkSection(json['require']);
+	}
+	if (typeof json['require-dev'] != undefined) {
+      enhanceLinkSection(json['require-dev']);
+	}
   }
 
 }());
